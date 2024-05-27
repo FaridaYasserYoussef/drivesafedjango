@@ -5,6 +5,26 @@ import hashlib
 
 from .models import Vehicle, VehicleType
 
+
+
+@csrf_exempt
+def getVehicleByDriver(request):
+    if request.method == 'POST':
+        driver = request.POST.get('driver')
+
+        try:
+            # Query the database to find a user with the provided username and hashed password
+            vehicle = Vehicle.objects.get(driver=driver)
+            return JsonResponse({'message': 'Vehicle Found', 'success': True, "vehicleData": {
+             "id": str(vehicle.id),
+             "license_plate": vehicle.license_plate,
+             "type": vehicle.type,
+             "driver": vehicle.driver
+            }}, status = 200)
+        except Driver.DoesNotExist:
+            return JsonResponse({'message': 'Invalid credentials', 'success': False}, status=400)
+    else:
+        return JsonResponse({'message': 'Only POST requests are allowed'}, status=405)
 @csrf_exempt
 def login(request):
     if request.method == 'POST':

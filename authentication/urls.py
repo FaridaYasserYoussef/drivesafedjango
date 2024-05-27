@@ -8,6 +8,8 @@ from .views import validate_email
 urlpatterns = [
     path("login/", login),
     path("signup/", sign_up),
-    path("validate_email/", validate_email)
+    path("validate_email/", validate_email),
+    path("get_vehicle_by_driver/", validate_email)
+
 
 ]
