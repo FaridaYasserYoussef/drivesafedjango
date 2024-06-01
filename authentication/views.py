@@ -5,6 +5,78 @@ import hashlib
 
 from .models import Vehicle, VehicleType
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
+
+
+@csrf_exempt
+def upload_video_data(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        file = request.FILES['file']
+        file_name = default_storage.save(os.path.join('videos', file.name), ContentFile(file.read()))
+        file_url = default_storage.url(file_name)
+        return JsonResponse({'status': 'success', 'file_name': file_name, 'file_url': file_url})
+    return JsonResponse({'status': 'failed'}, status=400)
+
+@csrf_exempt
+def upload_sensor_data(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        file = request.FILES['file']
+        file_name = default_storage.save(os.path.join('uploads', file.name), ContentFile(file.read()))
+        file_url = default_storage.url(file_name)
+        return JsonResponse({'status': 'success', 'file_name': file_name, 'file_url': file_url})
+    return JsonResponse({'status': 'failed'}, status=400)
+@csrf_exempt
+def edit_driver(request):
+    if request.method == 'POST':
+        # Get the new username and age from the POST request
+        new_username = request.POST.get('username')
+        new_age = request.POST.get('age')
+        driver_id = request.POST.get("id")
+
+        try:
+            # Retrieve the driver by ID
+            driver = Driver.objects.get(id=driver_id)
+            
+            # Update the driver's username and age
+            if new_username:
+                driver.username = new_username
+            if new_age:
+                driver.age = int(new_age)
+            
+            # Save the updated driver object
+            driver.save()
+
+            # Return the updated driver details in the response
+            return JsonResponse({
+                'message': 'Driver updated successfully',
+                'success': True,
+                'driverData': {
+                    'id': str(driver.id),
+                    'username': driver.username,
+                    'email': driver.email,
+                    'age': str(driver.age),
+                    'gender': driver.gender,
+                    'password': driver.password,
+                    'safety_score': str(driver.safety_score),
+                }
+            }, status=200)
+
+        except Driver.DoesNotExist:
+            return JsonResponse({'message': 'Driver not found', 'success': False}, status=404)
+        except Exception as e:
+            return JsonResponse({'message': str(e), 'success': False}, status=400)
+    else:
+        return JsonResponse({'message': 'Only POST requests are allowed'}, status=405)
 
 
 @csrf_exempt
@@ -18,8 +90,8 @@ def getVehicleByDriver(request):
             return JsonResponse({'message': 'Vehicle Found', 'success': True, "vehicleData": {
              "id": str(vehicle.id),
              "license_plate": vehicle.license_plate,
-             "type": vehicle.type,
-             "driver": vehicle.driver
+             "type": vehicle.type.type,
+             "driver": vehicle.driver.id
             }}, status = 200)
         except Driver.DoesNotExist:
             return JsonResponse({'message': 'Invalid credentials', 'success': False}, status=400)

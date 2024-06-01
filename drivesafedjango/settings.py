@@ -18,7 +18,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -29,8 +30,9 @@ SECRET_KEY = 'django-insecure-h4$_ukt&mair1zeqmub9p6okl6thpes2ymkr@kn5jz#-ewqc8(
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'https://drivesafeapp-a301fe33a058.herokuapp.com'
+    '192.168.1.4'
 ]
+
 
 
 # Application definition
@@ -43,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'driverbehaviordetection',
-    'authentication'
+    'authentication',
+    'manageTrips'
 ]
 
 MIDDLEWARE = [
