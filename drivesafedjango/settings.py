@@ -30,14 +30,26 @@ SECRET_KEY = 'django-insecure-h4$_ukt&mair1zeqmub9p6okl6thpes2ymkr@kn5jz#-ewqc8(
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.1.4'
+    '192.168.92.80'
 ]
+
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'driverbehaviordetection',
     'authentication',
-    'manageTrips'
+    'manageTrips',
+    'segmentor',
+    'preprocessor',
+    'classifier',
+    'scorer'
+
 ]
 
 MIDDLEWARE = [
@@ -77,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'drivesafedjango.wsgi.application'
+ASGI_APPLICATION = 'drivesafedjango.asgi.application'
 
 
 # Database
@@ -125,9 +142,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 django_heroku.settings(locals())
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

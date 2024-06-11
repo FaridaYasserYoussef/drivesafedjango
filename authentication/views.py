@@ -82,11 +82,14 @@ def edit_driver(request):
 @csrf_exempt
 def getVehicleByDriver(request):
     if request.method == 'POST':
-        driver = request.POST.get('driver')
+        driver_id = request.POST.get('driver')
+        print("driver id is ", driver_id)
 
         try:
             # Query the database to find a user with the provided username and hashed password
+            driver = Driver.objects.get(id = driver_id)
             vehicle = Vehicle.objects.get(driver=driver)
+            print(vehicle.license_plate)
             return JsonResponse({'message': 'Vehicle Found', 'success': True, "vehicleData": {
              "id": str(vehicle.id),
              "license_plate": vehicle.license_plate,
